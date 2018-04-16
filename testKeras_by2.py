@@ -163,10 +163,21 @@ if __name__=='__main__':
                             weights=[embedding_matrix],
                             input_length=MAX_SEQUENCE_LENGTH,
                             trainable=False)
+
+    num_positin =  1000  # max seq length
+    position_embedding_dim = 100
+
+    position_embedding = Embedding(num_positin,
+                            EMBEDDING_DIM,
+                            input_length=MAX_SEQUENCE_LENGTH,
+                            trainable=True)
     
     # S6: training  1D CNN and Maxpooling1D
     sequence_input = Input(shape=(MAX_SEQUENCE_LENGTH,), dtype='int32')
+    postion_input = Input(shape=(MAX_SEQUENCE_LENGTH,), dtype='int32')
+
     embedded_sequences = embedding_layer(sequence_input)
+    postion_input = position_embedding(postion_input)
     representions=[]
     for i in [2,3,5,7]:
         x = Conv1D(filters=128, kernel_size=i, activation='relu')(embedded_sequences)
@@ -176,13 +187,13 @@ if __name__=='__main__':
     x = Dense(128, activation='relu')(x)
     preds = Dense(len(labels_index), activation='softmax')(x)
 
-    model = Model(sequence_input, preds)
+    model = Model(inputs=[sequence_input, postion_input],sequence_input, preds)
     model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['acc'])
 
     # 如果希望短一些时间可以，epochs调小
-    model.fit(x_train, y_train,
+    model.fit([x_train, **postion input, which same size as  x_train**], y_train,
           batch_size=128,
           epochs=15,
           validation_data=(x_val, y_val))

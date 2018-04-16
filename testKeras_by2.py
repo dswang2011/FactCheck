@@ -194,7 +194,8 @@ if __name__=='__main__':
               metrics=['acc'])
 
     # 如果希望短一些时间可以，epochs调小
-    model.fit([x_train, **postion input, which same size as  x_train**], y_train,
+    x_train_postion= ~ #postion input, which same size as  x_train
+    model.fit([x_train, x_train_postion], y_train,
           batch_size=128,
           epochs=15,
           validation_data=(x_val, y_val))

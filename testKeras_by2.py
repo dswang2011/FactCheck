@@ -178,9 +178,10 @@ if __name__=='__main__':
 
     embedded_sequences = embedding_layer(sequence_input)
     postion_input = position_embedding(postion_input)
+    concatted_input = Concatenate()[embedded_sequences,postion_input]
     representions=[]
     for i in [2,3,5,7]:
-        x = Conv1D(filters=128, kernel_size=i, activation='relu')(embedded_sequences)
+        x = Conv1D(filters=128, kernel_size=i, activation='relu')(concatted_input)
         x = GlobalMaxPooling1D()(x)
         representions.append(x)
     concated_represention=  Concatenate()(representions)

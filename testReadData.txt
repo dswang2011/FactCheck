@@ -1,0 +1,44 @@
+
+import os
+import os.path
+import numpy as np
+from operator import itemgetter
+
+data = []
+count=0
+for root, dirs, files in os.walk("/home/dongsheng/code/CLEF/clef2018-factchecking-master/data/res3"):
+    for name in files:
+        if name.endswith("txt"):
+            with open(root + '/' + name,'r') as f:
+                countLine=0
+                sent2year=[]    # first value
+                ruling=-1   # second value                   
+                sample=[]
+                for line in f:
+                    countLine=countLine+1
+                    if(countLine==1):
+                        ruling=line.strip()
+                    else:
+                        strs = line.strip().split("\t")
+                        if len(strs)<3:
+                            continue
+                        sent2year.append([strs[3],strs[2]])
+                temp = np.array(sorted(sent2year,key=itemgetter(1)))
+                print(temp)
+                print("------------------")
+                sents = temp[:,0]
+                sample.append(".".join(sents))
+                if ruling in ['False','Pants on Fire!','Mostly False']:
+                    ruling=0
+                elif ruling in ['Mostly True','','True']:
+                    ruling=2
+                elif ruling=='Half-True':
+                    ruling=1
+                else:
+                    print(ruling)
+                    ruling=-1      
+                sample.append(ruling)
+                
+                data.append(sample)
+                #print(count,len(sample[0]),sample[1])
+                count=count+1
